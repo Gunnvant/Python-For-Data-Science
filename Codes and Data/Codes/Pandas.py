@@ -55,6 +55,8 @@ S=Series([1,2,3,4,5],index=['a','b','c','d','e'])
 S
 S[0]
 S['a']
+S.loc['b']
+S.iloc[2]
 S.values
 S.index
 #Adding one element to the series
@@ -132,8 +134,8 @@ type(frame3[['col2']])
 frame3[['col2','col1']]
 type(frame3[['col2','col1']])
 
-frame3.ix[1,'col1']
-frame3.ix[[1,0],['col2','col1']]
+frame3.loc[1,'col1']
+frame3.loc[[1,0],['col2','col1']]
 
 ##Besides .ix, one can also use .loc etc
 
@@ -231,7 +233,7 @@ dat_w1[0].head()
 
 headings=dat_w1[0].ix[0]
 headings.values.tolist()
-dat_r=dat_w1[0].ix[1:]
+dat_r=dat_w1[0].loc[1:]
 
 dat_r.columns=headings.values.tolist()
 dat_r.head()

@@ -27,87 +27,166 @@ print type(data.brand)
 # Sorting data
 # Adding new columns
 # Group By aggregations
+# Using map and apply
 # Handling dates
 # Handling text
 # Merging dataframes
 # Treating Missing Values
 
+terror=pd.read_csv('globalterrorismdb_0616dist.csv')
 
-#### Filtering data
-# Using logical subsets
-# Using query to subset
+terror.describe()
+terror.isnull().sum()
+terror.isnull().sum()/terror.shape[0]
+
+###Filter/subset
+#Index based
+terror.loc[[4,6]].head()
+terror.loc[[5,7],['eventid']]
+terror.iloc[[5,7],0]
+#Boolean
+terror['country_txt'].unique()
+terror.loc[terror['country_txt']=='Mexico',['eventid']]
+#This is more formal
+terror[terror['country_txt']=='Mexico'].shape
+terror[terror['country_txt']=='Mexico']['eventid']
+terror.query("country_txt=='Mexico'").shape
+#Multiple filters
+terror[(terror['country_txt']=='Mexico')&(terror['nkill']<=2)]['eventid']
+terror[(terror['country_txt']=='Mexico')&(terror['nkill']<=2)].shape
+# A more succint manner of writting
+index=(terror['country_txt']=='Mexico')&(terror['nkill']<=2)
+index.head()
+terror[index].shape
+
+### Column Selection
+terror.loc[[4,7]][['eventid','country_txt']]
+data.ix[[row_list]][[col_list]]
+terror.ix[terror['country_txt']=='Mexico',['eventid','country_txt']]
+
+### New column addition
+terror['log_nkill']=np.log(terror.nkill)
+terror[['nkill','log_nkill']].head()
+
+### Arranging data
+terror.sort_values(by=['country_txt','nkill'],axis=0,ascending=[1,0])[['country_txt','nkill']].head()
+
+### Group by
+terror.groupby('country_txt',as_index=False).agg({'nkill':sum})
+terror.groupby('country_txt',as_index=False).agg({'nkill':sum}).sort_values(by='nkill',axis=0,ascending=False)
+terror.groupby('country_txt',as_index=False)['nkill'].agg({np.sum,np.mean}).sort_values(by='sum',axis=0,ascending=False)
+
+terror.groupby('country_txt',as_index=False)['nkill'].agg({np.sum,np.mean}).sort_values(by='sum',axis=0,ascending=False).rename(columns={'mean':'Avg_nkill','sum':'Tot_nkill'})
+
+### Mapping lambdas and udf's to row/columns
+
+#Create a column indicating if terror attacks happened in Afghanistan, Pakistan or India as Af-Pak-Ind otherwise others
+
+def label(x):
+    if x=='India' or x=='Pakistan' or x=='Afghanistan':
+        return 'Af-Pak-Ind'
+    else:
+        return 'Others'
+terror['region']=terror['country_txt'].map(label)
+
+#Create a new column indicating Af-Pak-India+Suicide = 1 as Af-Pak-India-Brutal, Af-Pak-India+Suicide = 0, Af=Pak_India-Extreme, others+Suicide=1 others-Brutal, others+Suicide=0, others-Extreme
 
 
-# All rows corresponding to brand tropicana
-FLT1= data[data.brand=='tropicana']
-print FLT1.shape
+def label_s(x):
+    if(x['region']=='Af-Pak-Ind' and x['suicide']==1):
+        return 'Af-Pak-India-Suicide'
+    elif(x['region']=='Af-Pak-Ind' and x['suicide']==0):
+        return 'Af-Pak-India-NonSuicide'
+    elif (x['region']=='Others' and x['suicide']==1):
+        return 'Others-Suicide'
+    elif (x['region']=='Others' and x['suicide']==0):
+        return 'Others-NonSuicide'
+    else:
+        return 'None'
+terror.apply(label_s,axis=1).unique()
+terror['severity']=terror.apply(label_s,axis=1)
 
-# Multiple subsets: Or and AND conditions
-FLT2=data.query("brand=='tropicana' or brand=='minute.maid'")
-FLT2.shape
+terror['severity'].value_counts()
 
-FLT3=data.query("brand=='tropicana' & feat==1")
-print FLT3.head()
-print FLT3.shape
 
-FLT2=data[(data['brand']=='tropicana') |  (data['brand']=='minute.maid') ]
-FLT2.shape
 
-#### Selecting Columns
-# Selecting columns corresponding to brand and feat
-SEL1=data[['brand','feat']]
-SEL1.shape
 
-#### Selecting Rows
-# Selecting rows numbered 3,9,8
-SEL2=data.ix[[3,9,8]]
-SEL2.shape
 
-#### Sorting data
-SOR=data.sort_values('INCOME')
-SOR.head()
-
-SOR1=data.sort_values('INCOME',ascending=False)
-SOR1.head()
-
-SOR2=data.sort_values(['INCOME',"AGE60"],ascending=[False,True])
-SOR2.head()
-
-SOR3=data.sort_values(['brand','week'],ascending=[True,False])
-SOR3.head()
-
-#### Adding new columns to the data
-#log of income
-data=data.assign(log_inc=np.log(data.INCOME))
-data['new_col']=np.log(data.HHLARGE)
-data=data.assign(new_col1=np.log(data.INCOME),new_col2=np.log(data.INCOME))
-#### Group by aggregations
-# Grouping by one or more variable(s) and aggregating one column
-# Grouping by one or more variable(s) and aggregating multiple columns in same way
-# Grouping by one or more variable(s) and aggregating multiple columns differently
-#Finding average price across brands
-data.groupby('brand',as_index=False)['price'].mean()
-
-#Finding average age, price across brands
-data.groupby('brand',as_index=False)[['price','AGE60']].mean()
-
-# Finding average age, total price across brands
-data.groupby('brand',as_index=False).agg({'price':np.sum,'AGE60':np.mean}).rename(columns={'price':'Mean_price','AGE60':'Total_Age'})
-
-# What if we want the names of new columns to be also changed
-data.groupby('brand',as_index=False).agg({'price':{'Total_Price':np.sum},'AGE60':{'Mean_age':np.mean}})
-
-a=data.groupby('brand',as_index=False).agg({'price':{'Total_Price':np.sum},'AGE60':{'Mean_age':np.mean}})
-a.columns
-
-# Finding average age, total price across brands and feature advertisements run
-data.groupby(['brand','feat'],as_index=False).agg({'price':np.mean,'AGE60':np.sum}).rename(columns={'price':'Mean_price','AGE60':'Total_Age'})
-
-###Window functions using transform
-#Sorting data within group
-data['logmove']=data.groupby('brand')['logmove'].transform(lambda x:x.sort_values(ascending=False))
-data[['logmove','brand','price']].groupby('brand').head(5)
-
+##### Filtering data
+## Using logical subsets
+## Using query to subset
+#
+#
+## All rows corresponding to brand tropicana
+#FLT1= data[data.brand=='tropicana']
+#print FLT1.shape
+#
+## Multiple subsets: Or and AND conditions
+#FLT2=data.query("brand=='tropicana' or brand=='minute.maid'")
+#FLT2.shape
+#
+#FLT3=data.query("brand=='tropicana' & feat==1")
+#print FLT3.head()
+#print FLT3.shape
+#
+#FLT2=data[(data['brand']=='tropicana') |  (data['brand']=='minute.maid') ]
+#FLT2.shape
+#
+##### Selecting Columns
+## Selecting columns corresponding to brand and feat
+#SEL1=data[['brand','feat']]
+#SEL1.shape
+#
+##### Selecting Rows
+## Selecting rows numbered 3,9,8
+#SEL2=data.ix[[3,9,8]]
+#SEL2.shape
+#
+##### Sorting data
+#SOR=data.sort_values('INCOME')
+#SOR.head()
+#
+#SOR1=data.sort_values('INCOME',ascending=False)
+#SOR1.head()
+#
+#SOR2=data.sort_values(['INCOME',"AGE60"],ascending=[False,True])
+#SOR2.head()
+#
+#SOR3=data.sort_values(['brand','week'],ascending=[True,False])
+#SOR3.head()
+#
+##### Adding new columns to the data
+##log of income
+#data=data.assign(log_inc=np.log(data.INCOME))
+#data['new_col']=np.log(data.HHLARGE)
+#data=data.assign(new_col1=np.log(data.INCOME),new_col2=np.log(data.INCOME))
+##### Group by aggregations
+## Grouping by one or more variable(s) and aggregating one column
+## Grouping by one or more variable(s) and aggregating multiple columns in same way
+## Grouping by one or more variable(s) and aggregating multiple columns differently
+##Finding average price across brands
+#data.groupby('brand',as_index=False)['price'].mean()
+#
+##Finding average age, price across brands
+#data.groupby('brand',as_index=False)[['price','AGE60']].mean()
+#
+## Finding average age, total price across brands
+#data.groupby('brand',as_index=False).agg({'price':np.sum,'AGE60':np.mean}).rename(columns={'price':'Mean_price','AGE60':'Total_Age'})
+#
+## What if we want the names of new columns to be also changed
+#data.groupby('brand',as_index=False).agg({'price':{'Total_Price':np.sum},'AGE60':{'Mean_age':np.mean}})
+#
+#a=data.groupby('brand',as_index=False).agg({'price':{'Total_Price':np.sum},'AGE60':{'Mean_age':np.mean}})
+#a.columns
+#
+## Finding average age, total price across brands and feature advertisements run
+#data.groupby(['brand','feat'],as_index=False).agg({'price':np.mean,'AGE60':np.sum}).rename(columns={'price':'Mean_price','AGE60':'Total_Age'})
+#
+####Window functions using transform
+##Sorting data within group
+#data['logmove']=data.groupby('brand')['logmove'].transform(lambda x:x.sort_values(ascending=False))
+#data[['logmove','brand','price']].groupby('brand').head(5)
+#
 #### Handling dates
 flt=pd.read_csv('Fd.csv')
 print flt.dtypes

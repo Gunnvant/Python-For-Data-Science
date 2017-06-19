@@ -1,0 +1,2 @@
+I am using an open source data set, you can download it from here (git hub size restrictions don't allow for this dataset)
+https://www.kaggle.com/START-UMD/gtd
