@@ -55,8 +55,8 @@ print dir(st)
 
 print len(st)
 print st.count('i')
-print st.find('i')
-print st.find('l')
+print st.find('I')
+print st.find('w')
 
 w="Two Shōkaku-class aircraft carriers, Shōkaku and Zuikaku, were commissioned by the Imperial Japanese Navy during World War II. They participated in the attack on Pearl Harbor, the Indian Ocean Raid, and the battles of the Coral Sea, the Eastern Solomons, and the Santa Cruz Islands. Their air groups sank two of the four fleet carriers lost by the United States Navy during the war in addition to one elderly British light carrier. Returning to Japan after the Battle of the Coral Sea to repair damage and replace lost aircraft, they missed the Battle of Midway in June 1942. After the catastrophic loss of four carriers during that battle, they formed the bulk of Japan's carrier force for the rest of the war. Shōkaku was sunk by an American submarine during the Battle of the Philippine Sea in June 1944 as the Americans invaded the Mariana Islands, and Zuikaku was sacrificed as part of a decoy force four months later in the Battle of Leyte Gulf, both with heavy loss of life. Historian Mark Peattie called them 'arguably the best aircraft carriers' of the early 1940s."
 
@@ -84,6 +84,7 @@ else:
     
 assign_txt="Narendra Damodardas Modi, born 17 September 1950) is the 15th and current Prime Minister of India, in office since 26 May 2014.odi, a leader of the Bharatiya Janata Party was the Chief Minister of Gujarat from 2001 to 2014 and is the Member of Parliament from Varanasi. He led the BJP in the 2014 general election, which gave the party a majority in the Lok Sabha, the first for any political party in India since 1984.As the Chief Minister of Gujarat, Modi's economic policies were praised, while his administration was also criticised for failing to significantly improve the human development in the state, and for failing to prevent the 2002 Gujarat riots. A Hindu nationalist and member of the Rashtriya Swayamsevak Sangh, Modi,remains a controversial figure domestically and internationally. Modi was born on 17 September 1950, to a family of grocers in Vadnagar, Mehsana district, Bombay State (present-day Gujarat).Modi's family belonged to the Modh-Ghanchi-Teli (oil-presser) community,hich is categorised as an Other Backward Class by the Indian government.Modi was the third of six children born to Damodardas Mulchand (1915–1989) and Heeraben Modi (b. c. 1920).As a child, Modi helped his father sell tea at the Vadnagar railway station, and later ran a tea stall with his brother near a bus terminus.Modi completed his higher secondary education in Vadnagar in 1967, where a teacher described him as an average student and a keen debater, with an interest in theatre.Modi had an early gift for rhetoric in debates, and this was noted by his teachers and students.Modi preferred playing larger-than-life characters in theatrical productions, which has influenced his political image.At age eight, Modi discovered the Rashtriya Swayamsevak Sangh (RSS), and began attending its local shakhas (training sessions). There, Modi met Lakshmanrao Inamdar, popularly known as Vakil Saheb, who inducted him as an RSS balswayamsevak (junior cadet) and became his political mentor.While Modi was training with the RSS, he also met Vasant Gajendragadkar and Nathalal Jaghda, Bharatiya Jana Sangh leaders who were founding members of the BJP's Gujarat unit in 1980.Engaged while still a child to a local girl, Jashodaben Narendrabhai Modi, Modi rejected the arranged marriage at the same time he graduated from high school.The resulting familial tensions contributed to his decision to leave home in 1967.Modi spent the ensuing two years travelling across Northern and North-eastern India, though few details of where he went have emerged.In interviews, Modi has described visiting Hindu ashrams founded by Swami Vivekananda: the Belur Math near Kolkata, followed by the Advaita Ashrama in Almora and the Ramakrishna mission in Rajkot. Modi remained only a short time at each, since he lacked the required college education."
 
+    
 ###  Lists
 # Lists as buckets of data
 # List slicing
@@ -107,7 +108,7 @@ print l1
 # Find out the approximate total number of lines in assign_txt (Use the split() method to create a list, assume "." to be EOL)
 # Extract the years like 1950 from the text and count their occurence
 
-
+        
 #### List comprehension
 # Its a concise way of creating lists
 # Usefull convention to know about
@@ -210,6 +211,9 @@ for x in di:
 
 ### Use the assign_txt
 # Find out the occurence of each word in text string (Create a list of each word in the string, loop over this list to create a dictionary of words and their occurences
+
+
+        
     
 ### Files
 # Reading files
@@ -218,7 +222,7 @@ for x in di:
     
 # modules interlude
 import os
-os.chdir('\')
+os.chdir('E:\\Work\\Python\\WNS Python\\Basic Python For Data Science\\Codes and Data\\Data')
 
 f=open('tweets_assignment.txt','r')
 fo=f.read()

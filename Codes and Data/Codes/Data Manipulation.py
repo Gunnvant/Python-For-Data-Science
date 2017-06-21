@@ -12,14 +12,14 @@ import numpy as np
 import os
 os.chdir('\')
 
-data=pd.read_csv('oj.csv')
+terror=pd.read_csv('.../globalterrorismdb_0616dist.csv')
 
-print data.head()
-print data.shape
-
-print type(data['brand'])
-print type(data[['brand']])
-print type(data.brand)
+#print data.head()
+#print data.shape
+#
+#print type(data['brand'])
+#print type(data[['brand']])
+#print type(data.brand)
 
 ## Data Manipulation tasks:
 # Filtering data
